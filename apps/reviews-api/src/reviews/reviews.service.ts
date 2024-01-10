@@ -8,4 +8,14 @@ export class ReviewsService {
 	getReviewsCount() {
 		return this.prisma.review.count();
 	}
+
+	getReviews() {
+		return this.prisma.review.findMany({
+			orderBy: [{ createdOn: 'desc' }],
+			include: {
+				user: true,
+				company: true,
+			},
+		});
+	}
 }

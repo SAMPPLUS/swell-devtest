@@ -6,9 +6,11 @@ import { ReviewsCountResponse, ReviewsResponse } from './reviews.types';
 export class ReviewsController {
 	constructor(private reviewsService: ReviewsService) {}
 
+	//should be return: Promise<ReviewsResponse>
 	@Get()
 	async getReviews(): Promise<ReviewsResponse> {
-		throw new NotFoundException('Not implemented');
+		const reviews = await this.reviewsService.getReviews();
+		return { reviews };
 	}
 
 	@Get('/count')

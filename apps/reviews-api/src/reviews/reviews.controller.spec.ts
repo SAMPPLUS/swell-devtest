@@ -81,14 +81,52 @@ describe('ReviewsController', () => {
 	});
 
 	describe('getReviews()', () => {
-		it.todo('should fetch all reviews');
+		it('should fetch all reviews', async () => {
+			const response = await request(app.getHttpServer()).get('/reviews/');
+			expect(response.status).toBe(200);
+			expect(response.body.reviews.length).toBe(3);
+		});
 
-		it.todo('should fetch reviews in descending order by date');
+		it('should fetch reviews in descending order by date', async () => {
+			const response = await request(app.getHttpServer()).get('/reviews/');
+			expect(response.body.reviews[0]).toHaveProperty('createdOn');
+			var lastDate = Date.parse(response.body.reviews[0].createdOn);
+			for (let i = 1; i < response.body.reviews.length; i++) {
+				let d = Date.parse(response.body.reviews[i].createdOn);
+				expect(lastDate > d).toBeTruthy();
+				lastDate = d;
+			}
+		});
 
-		it.todo('should include user data with review');
+		it('should include user data with review', async () => {
+			const response = await request(app.getHttpServer()).get('/reviews/');
+			const review = response.body.reviews[0];
+			expect(review).toHaveProperty('user');
+			const user = review.user;
+			expect(user).toHaveProperty('id');
+			expect(user).toHaveProperty('firstName');
+			expect(user).toHaveProperty('lastName');
+			expect(user).toHaveProperty('email');
+		});
 
-		it.todo('should include company data with review');
+		it('should include company data with review', async () => {
+			const response = await request(app.getHttpServer()).get('/reviews/');
+			const review = response.body.reviews[0];
+			expect(review).toHaveProperty('company');
+			const company = review.company;
+			expect(company).toHaveProperty('id');
+			expect(company).toHaveProperty('name');
+		});
 
+		it('should include review data', async () => {
+			const response = await request(app.getHttpServer()).get('/reviews/');
+			const review = response.body.reviews[0];
+			expect(review).toHaveProperty('id');
+			expect(review).toHaveProperty('createdOn');
+			expect(review).toHaveProperty('rating');
+			expect(review).toHaveProperty('reviewText');
+			expect(new Date(review.createdOn).getTime()).not.toBeNaN();
+		});
 		// Feel free to add any additional tests you think are necessary
 	});
 });
